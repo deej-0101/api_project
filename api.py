@@ -66,7 +66,18 @@ def get_food_with_wine():
     cur.close()
     return make_response(jsonify(food_with_wine), 200)
 
-    
+# wine name and winemaker name and country name
+@app.route("/wines/winemaker_and_country", methods=["GET"])
+def get_winemaker_and_country():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                    select wine.wine_name, winemaker.winemaker_name, countries.country_name 
+	                from winemaker inner join countries on winemaker.country_code = countries.country_code 
+	                inner join wine on winemaker.winemaker_id = wine.winemaker_id
+                      """)
+    winemaker_and_country = cur.fetchall()
+    cur.close()
+    return make_response(jsonify(winemaker_and_country), 200)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -35,5 +35,10 @@ class MyAppTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("quia" in response.data.decode())
     
+    def test_winemaker_and_country(self):
+        response = self.app.get("/wines/winemaker_and_country")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("Italy" in response.data.decode())
+        
 if __name__ == "__main__":
     unittest.main()
