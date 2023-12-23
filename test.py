@@ -40,5 +40,12 @@ class MyAppTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("Italy" in response.data.decode())
         
+    def test_add_winemaker(self):
+        data = {"country_code": "US", "winemaker_name": "test wine"}
+        response = self.app.post('/wines', data=json.dumps(data), headers = {'Content-Type':'application/json'})
+        data = json.loads(response.data)
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue("winemaker added successfully" in response.data.decode())
+        
 if __name__ == "__main__":
     unittest.main()

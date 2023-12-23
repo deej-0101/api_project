@@ -79,5 +79,21 @@ def get_winemaker_and_country():
     cur.close()
     return make_response(jsonify(winemaker_and_country), 200)
 
+@app.route("/wines", methods=["POST"])
+def add_winemaker():
+    cur = mysql.connection.cursor()
+    info = request.get_json()
+    country_code = info["country_code"]
+    winemaker_name = info["winemaker_name"]
+    cur.execute("""
+                INSERT INTO winemaker (country_code, winemaker_name)
+                VALUES (%s, %s)
+                """, (country_code, winemaker_name),)
+    mysql.connection.commit()
+    print("row(s) affected: {}".format(cur.rowcount))
+    rows_affected = cur.rowcount
+    cur.close()
+    return make_response(jsonify({"message" : "winemaker added successfully", "rows_affected": rows_affected}), 201)
+
 if __name__ == "__main__":
     app.run(debug=True)
