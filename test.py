@@ -47,5 +47,19 @@ class MyAppTest(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertTrue("winemaker added successfully" in response.data.decode())
         
+    def test_update_winemaker(self):
+        data = {"country_code": "US", "winemaker_name": "test wine"}
+        response = self.app.put('/wines/7', data=json.dumps(data), headers = {'Content-Type':'application/json'})
+        data = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("winemaker updated successfully" in response.data.decode())
+        
+    def test_delete_winemaker(self):
+        response = self.app.delete('/wines/7')
+        data = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("winemaker deleted successfully" in response.data.decode())
+        
+        
 if __name__ == "__main__":
     unittest.main()
