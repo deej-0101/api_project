@@ -33,12 +33,27 @@ def get_wines():
                       """)
     return make_response(jsonify(data), 200)
 
+# get wine by id
 @app.route("/wines/<int:id>", methods=["GET"])
 def get_wine_by_id(id):
     data = data_fetch("""
                       SELECT * FROM wine WHERE wine_id = {}
                       """.format(id))
     return make_response(jsonify(data), 200)
+
+# get top 10 wine
+@app.route("/wines/top_10_expensive_wine", methods=["GET"])
+def get_top_10_wine():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                     select wine.wine_name, wine.color, winemaker.winemaker_name, wine.price_bottle 
+	                from wine inner join winemaker on wine.winemaker_id = winemaker.winemaker_id 
+                    order by wine.price_bottle desc limit 10
+                      """)
+    top_wines = cur.fetchall()
+    cur.close()
+    return make_response(jsonify(top_wines), 200)
+
 
     
 
