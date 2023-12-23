@@ -54,6 +54,17 @@ def get_top_10_wine():
     cur.close()
     return make_response(jsonify(top_wines), 200)
 
+# get food name w wine name
+@app.route("/wines/food_paired_with_wine", methods=["GET"])
+def get_food_with_wine():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                    select wine_goes_with_food.food_name, wine.wine_name 
+	                from wine_goes_with_food inner join wine on wine_goes_with_food.wine_id = wine.wine_id
+                      """)
+    food_with_wine = cur.fetchall()
+    cur.close()
+    return make_response(jsonify(food_with_wine), 200)
 
     
 
