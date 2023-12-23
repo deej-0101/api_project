@@ -79,6 +79,7 @@ def get_winemaker_and_country():
     cur.close()
     return make_response(jsonify(winemaker_and_country), 200)
 
+# add winemaker
 @app.route("/wines", methods=["POST"])
 def add_winemaker():
     cur = mysql.connection.cursor()
@@ -90,10 +91,38 @@ def add_winemaker():
                 VALUES (%s, %s)
                 """, (country_code, winemaker_name),)
     mysql.connection.commit()
-    print("row(s) affected: {}".format(cur.rowcount))
     rows_affected = cur.rowcount
     cur.close()
     return make_response(jsonify({"message" : "winemaker added successfully", "rows_affected": rows_affected}), 201)
+
+# update winemaker
+@app.route("/wines/<int:id>", methods=["PUT"])
+def update_winemaker(id):
+    cur = mysql.connection.cursor()
+    info = request.get_json()
+    country_code = info["country_code"]
+    winemaker_name = info["winemaker_name"]
+    cur.execute("""
+                UPDATE winemaker SET country_code = %s, winemaker_name = %s
+                WHERE winemaker_id = %s
+                """, (country_code, winemaker_name, id),)
+    mysql.connection.commit()
+    rows_affected = cur.rowcount
+    cur.close()
+    return make_response(jsonify({"message" : "winemaker updated successfully", "rows_affected": rows_affected}), 200)
+
+# delete winemaker
+@app.route("/wines/<int:id>", methods=["DELETE"])
+def delete_winemaker(id):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                DELETE FROM winemaker where winemaker_id = %s
+                """,(id,))
+    mysql.connection.commit()
+    rows_affected = cur.rowcount
+    cur.close()
+    return make_response(jsonify({"message" : "winemaker deleted successfully", "rows_affected": rows_affected}), 200)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
