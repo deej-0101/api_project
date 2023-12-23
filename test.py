@@ -60,6 +60,13 @@ class MyAppTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("winemaker deleted successfully" in response.data.decode())
         
+    def test_winemaker_search(self): 
+        response = self.app.get("/wines/search?search_term=Bartell")
+        data = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("Bartell" in response.data.decode())
+        
+        
         
 if __name__ == "__main__":
     unittest.main()

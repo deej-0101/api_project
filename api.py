@@ -123,6 +123,17 @@ def delete_winemaker(id):
     cur.close()
     return make_response(jsonify({"message" : "winemaker deleted successfully", "rows_affected": rows_affected}), 200)
 
+# search 
+@app.route("/wines/search", methods=["GET"])
+def search_winemaker():
+    search_term = request.args.get("search_term")
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                SELECT * FROM winemaker where winemaker_name LIKE %s 
+                """,('%' + search_term + '%',))
+    wines = cur.fetchall()
+    cur.close()
+    return make_response(jsonify(wines), 200)
 
 if __name__ == "__main__":
     app.run(debug=True)
